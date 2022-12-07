@@ -2,8 +2,31 @@ import { Text, TextInput, View, TouchableOpacity, StyleSheet, TouchableWithoutFe
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import InputField from '../components/InputField'
-import Currency from "react-currency-formatter-v2"
+import { useDispatch, useSelector } from 'react-redux'
+
+import { 
+	assignValue, 
+	assignInterest, 
+	assignLength, 
+	assignPayment, 
+	assignTotalPayment, 
+	assignTotalInterest,
+	calculateTotalPayment,
+	calculateTotalInterest,
+	pullPayment
+} from '../Redux/reducers/loanSlice'
+
+import { 
+	pullValue
+} from '../Redux/reducers/loanSlice'
+
+//import Currency from "react-currency-formatter-v2"
+import AddToCompare from '../components/AddToCompare'
+import ViewCompare from '../components/ViewCompare'
+import Currency from '../components/Currency'
+import ViewSchedule from '../components/ViewSchedule'
+
+
 
 
 
@@ -15,6 +38,9 @@ import Currency from "react-currency-formatter-v2"
 
 const HomeScreen = () => {
 	const navigation = useNavigation()
+	const dispatch = useDispatch()
+
+	const payment_selector = useSelector(pullPayment)
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -26,6 +52,9 @@ const HomeScreen = () => {
 	const [interestRate, setInterestRate] = useState('')
 	const [length, setLength] = useState('')
 	const [payment, setPayment] = useState(0)
+	const [totalPayments, setTotalPayments] = useState(0)
+	const [totalInterest, setTotalInterest] = useState(0)
+	const [buttonStatus, setButtonStatus] = useState(false)
 
 	const handleCalculate = (P, i, n, A) => {
 
@@ -39,35 +68,82 @@ const HomeScreen = () => {
 			n = 0
 		}
 		if(A === ''){
-			AbortSignal = 0
+			A = 0
 		}
 		
 		let P_num = parseFloat(P)
-		let i_num = (parseFloat(i) / 100) /12
+		let i_num = (parseFloat(i) / 100) / 12
 		let n_num = parseFloat(n)
 		let A_num = parseFloat(A)
 
-		A_num = P_num * ((i_num * (( 1 + i_num) ** n_num)) / (((1 + i_num) ** n_num) - 1 ))
+		A_num = P_num * (i_num * (( 1 + i_num ) ** n_num)) / (((1 + i_num) ** n_num) - 1 )
 
 		let A_string = A_num.toString()
+		console.log(`A NUMBER PAYMENT: ${A_num}`)
+		console.log(`INTEREST / 12: ${i_num}`)
+		console.log(`LENGHT: ${n_num}`)
+		console.log(`WHOLE LOAN: ${P_num}`)
+		console.log()
 		setPayment(A_num)
+		let totalPayment = ( A_num * n_num )
+		setTotalPayments(totalPayment)
+		let totalInterestCalculated = ( A_num * n_num) - P_num
+		setTotalInterest(totalInterestCalculated)
+		setButtonStatus(true)
+
+		dispatch(assignValue(loanValue))
+		dispatch(assignInterest(interestRate))
+		dispatch(assignLength(length))
+		dispatch(assignPayment(A_num))
+		dispatch(calculateTotalPayment())
+		dispatch(calculateTotalInterest())
+		
+
 		Keyboard.dismiss()
 	}
 
 	const handleClear = () => {
-
 		setLoanValue('')
 		setInterestRate('')
 		setLength('')
-		setPayment('')
+		setPayment(0)
+		setTotalPayments(0)
+		setTotalInterest(0)
+		setButtonStatus(false)
+		dispatch(assignPayment(0))
 		Keyboard.dismiss()
-		
+
 	}
 
+	const result = useSelector(pullValue)
+	
+
 	useEffect(() => {
-		console.log(loanValue)
-		console.log(payment)
-	}, [loanValue, payment])
+		//console.log(loanValue)
+		//console.log(payment)
+
+
+
+		//if i use result.value, then the export on the loanSlice page must be return state.loan
+		// if i use result, then the export on the loanSlice page must be state.loan.value
+		console.log(`THIS IS REDUX INFO: ${result}`)
+	}, [loanValue, payment, result])
+
+	// const compareLoan = (amount, interest, length, payment, totalPayments, totalInterest) => {
+	// 	this.amount = amount
+	// 	this.interest = interest
+	// 	this.length = length
+	// 	this.payment = payment
+	// 	this.totalPayments = totalPayments
+	// 	this.totalInterest = totalInterest
+	// }
+
+	// let compareLoansList = []
+
+	// const handleAddToCompare = (amount, interest, length, payment, totalPayments, totalInterest) => {
+	// 	const newCompareLoan = new compareLoan(amount, interest, length, payment, totalPayments, totalInterest)
+	// 	compareLoansList.push(newCompareLoan)
+	// }
 
 	
 	return (
@@ -142,17 +218,57 @@ const HomeScreen = () => {
 				</TouchableOpacity>
 				
 			</View>
-			<View className="flex flex-row justify-center pt-5">
+			<View className="flex flex-row pt-10 justify-center">
+				<Text className="text-gray-500 font-light">Note: These values are estimates and actual values may vary between banks</Text>
+			</View>
+			<View className="flex flex-row justify-center gap-x-4 pt-5">
 				<Text className="text-xl">Payment: </Text>
 				<Text className="text-xl">
-					<Currency 
+					{/* <Currency 
 						quantity={payment}
 						currency="USD"
+					/> */}
+					<Currency
+						value={payment_selector}
+					/>
+					
+
+				</Text>
+			</View>
+			<View className="flex flex-row justify-center pt-5">
+				<Text className="text-xl">Total Paid: </Text>
+				<Text className="text-xl">
+					{/* <Currency 
+						quantity={totalPayments}
+						currency="USD"
+					/> */}
+					<Currency
+						value={totalPayments}
 					/>
 
 				</Text>
 			</View>
-			
+			<View className="flex flex-row justify-center pt-5">
+				<Text className="text-xl">Total Interest Paid: </Text>
+				<Text className="text-xl">
+					{/* <Currency 
+						quantity={totalInterest}
+						currency="USD"
+					/> */}
+					<Currency
+						value={totalInterest}
+					/>
+					
+
+				</Text>
+			</View>
+			<View className="flex flex-row justify-center mt-4">
+				<AddToCompare status={buttonStatus}/>	
+				<ViewCompare status={buttonStatus}/>
+			</View>
+			<View className="flex flex-row justify-center mt-4">
+				<ViewSchedule status={buttonStatus}/>
+			</View>
 		</SafeAreaView>
 	)
 }
