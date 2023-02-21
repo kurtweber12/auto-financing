@@ -15,13 +15,13 @@ const handleRounding = (afterDecimalNumber) => {
             firstDecimalZero = true
         }
 
-        console.log('-------------')
-        console.log(`SPLITAFTERNUMBER: ${splitAfterNumber}`)
-        console.log(`SPLITBEFORENUMBER: ${splitBeforeNumber}`)
-        console.log(`ROUND_ON_NUMBER: ${roundOnNumber}`)
-        console.log(`ROUNDED_NUMBER: ${roundedNumber}`)
-        console.log(firstDecimalZero)
-        console.log('--------------------')
+        // console.log('-------------')
+        // console.log(`SPLITAFTERNUMBER: ${splitAfterNumber}`)
+        // console.log(`SPLITBEFORENUMBER: ${splitBeforeNumber}`)
+        // console.log(`ROUND_ON_NUMBER: ${roundOnNumber}`)
+        // console.log(`ROUNDED_NUMBER: ${roundedNumber}`)
+        // console.log(firstDecimalZero)
+        // console.log('--------------------')
 
         if(splitBeforeNumber.length === 0) {
             decimals = '00'
@@ -58,8 +58,8 @@ const handleCommas = (numbersList) => {
     // }
 
     let decimalsInt = parseInt(decimalsString)
-    console.log(`DECIMALS: ${afterDecimalNumber}`)
-    console.log(`DECIMALS: ${decimalsString}`)
+    // console.log(`DECIMALS: ${afterDecimalNumber}`)
+    // console.log(`DECIMALS: ${decimalsString}`)
 
     let addForRounding = 0
 
@@ -100,12 +100,12 @@ const Currency = ({value}) => {
 
     let commas = handleCommas(value_string_list)
 
-    useEffect(() => {
-        console.log(value_string)
-        console.log(value_string_list)
-        console.log(value_string_list[0].length)
-        console.log(commas)
-    }, [value])
+    // useEffect(() => {
+    //     console.log(value_string)
+    //     console.log(value_string_list)
+    //     console.log(value_string_list[0].length)
+    //     console.log(commas)
+    // }, [value])
 
 
 

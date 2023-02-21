@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import { addToCompare } from '../Redux/reducers/compareSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,19 +18,35 @@ const AddToCompare = ({status}) => {
     }
 
     useEffect(() => {
-        console.log(`CURRENT LOAN: ${JSON.stringify(currentLoanState.value)}`)
+        console.log(`CURRENT LOAN: ${JSON.stringify(currentLoanState.buttonStatus)}`)
     }, [currentLoanState])
 
     return (
         <TouchableOpacity 
-            className="flex justify-center items-center mx-2 w-40 bg-white h-10 rounded-3xl border-2 border-blue-900"
+            className="flex justify-center items-center mx-2 w-40 bg-white h-10 rounded-3xl border-2"
             onPress={() => {
                 handleAddToCompare(currentLoanState)
             }}
+            disabled={!status}
+            style={!status ? styles.disabled : styles.enabled}
         >
-            <Text className="text-blue-900">Add To Comparison</Text>
+            <Text 
+                style={
+                    status ? {color: '#1e3a8a'} : {color: '#9ca3af'}
+                }
+            >Add To Comparison</Text>
         </TouchableOpacity>
     )
 }
 
 export default AddToCompare
+
+const styles = StyleSheet.create({
+    disabled: { 
+        opacity: 0.5,
+        borderColor: '#9ca3af'  
+    },
+    enabled: {
+        borderColor: '#1e3a8a',    
+    },
+})

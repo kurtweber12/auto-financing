@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import HomeScreen from './screens/HomeScreen';
 import CompareScreen from './screens/CompareScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
+import ExpoStatusBar from 'expo-status-bar/build/ExpoStatusBar';
 
 const Stack = createNativeStackNavigator()
 
@@ -25,6 +26,7 @@ export default function App() {
           <StatusBar style="auto" />
         </TailwindProvider>
       </Provider>
+      <ExpoStatusBar style="dark" />
     </NavigationContainer>
   );
 }

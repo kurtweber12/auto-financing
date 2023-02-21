@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { TurboModuleRegistry } from "react-native";
 
 const initialState = {
     value: 0,
@@ -6,7 +7,8 @@ const initialState = {
     length: 0,
     payment: 0,
     totalPayment: 0,
-    totalInterest: 0
+    totalInterest: 0,
+    buttonStatus: false
 }
 
 const loanSlice = createSlice({
@@ -36,6 +38,9 @@ const loanSlice = createSlice({
         },
         calculateTotalInterest: (state) => {
             state.totalInterest = state.totalPayment - state.value
+        },
+        setButtonStatusState: (state, action) => {
+            state.buttonStatus = action.payload
         }
 
     }
@@ -49,7 +54,8 @@ export const {
     assignTotalPayment, 
     assignTotalInterest,
     calculateTotalPayment,
-    calculateTotalInterest
+    calculateTotalInterest,
+    setButtonStatusState
 } = loanSlice.actions
 
 export const pullValue = (state) => {
@@ -70,7 +76,9 @@ export const pullTotalPayment = (state) => {
 export const pullTotalInterest = (state) => {
     return state.loan.totalInterest
 }
-
+export const getButtonStatus = (state) => {
+    return state.loan.buttonStatus
+}
 
 
 // returns the entire loan as an object
