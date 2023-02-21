@@ -91,7 +91,6 @@ const useScheduleCreation = (dateList, loanTerm, loan) => {
             dateNumber++
         }
 
-        
     }
     return amortizationList
     //console.log(monthInNumber)
